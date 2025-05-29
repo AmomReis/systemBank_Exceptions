@@ -1,48 +1,50 @@
 package application;
 
-import entities.Account;
+import model.entities.Account;
+import model.exceptions.DomainExceptions;
 
+import java.text.ParseException;
+import java.util.InputMismatchException;
 import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         Locale.setDefault(Locale.US);
         Scanner sc = new Scanner(System.in);
-        Account account;
 
-        System.out.print("Enter account number: ");
-        int number = sc.nextInt();
-        sc.nextLine();
-        System.out.print("Enter account holder: ");
-        String holder = sc.nextLine();
-        System.out.print("Is there an initial deposit (y/n)? ");
-        char response = sc.nextLine().charAt(0);
+        try {
+            System.out.println("Enter account data ");
+            System.out.print("Number: ");
+            int number = sc.nextInt();
+            sc.nextLine();
+            System.out.print("Holder: ");
+            String holder = sc.nextLine();
+            System.out.print("Inicial balance: ");
+            Double initBalance = sc.nextDouble();
+            System.out.print("Withdraw limit: ");
+            Double withdrawLim = sc.nextDouble();
 
-        if (response == 'y') {
-            System.out.print("Enter initial deposit value: ");
-            double initialDeposit = sc.nextDouble();
-            account = new Account(holder, number, initialDeposit);
-        } else {
-            account = new Account(holder, number);
+            Account account = new Account(number, holder, initBalance, withdrawLim);
+
+            System.out.println();
+            System.out.print("Enter amount for withdraw:");
+            double amount = sc.nextDouble();
+
+            account.withdraw(amount);
         }
-
-        System.out.println();
-        System.out.println("Account data:");
-        System.out.println(account);
-
-        System.out.println();		System.out.print("Enter a deposit value: ");
-        double depositValue = sc.nextDouble();
-        account.deposit(depositValue);
-        System.out.println("Update account data: ");
-        System.out.println(account);
-
-        System.out.println();
-        System.out.print("Enter a withdraw value: ");
-        double withdrawValue = sc.nextDouble();
-        account.withdraw(withdrawValue);
-        System.out.println("Update account data: ");
-        System.out.println(account);
+        catch (DomainExceptions e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        catch (InputMismatchException e) {
+            System.out.println("It looks like you tried to enter some wrong data." + e.getMessage());
+        }
+        catch (NullPointerException e) {
+            System.out.println("Internal error: Attempt to access a non-existent object.");
+        }
+        catch (Exception e) {
+            System.out.println("Unexpected error");
+        }
 
         sc.close();
     }
