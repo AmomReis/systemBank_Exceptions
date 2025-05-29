@@ -45,7 +45,8 @@ public class Main {
         catch (Exception e) {
             System.out.println("Unexpected error");
         }
-
-        sc.close();
+        finally {
+            sc.close();
+        }
     }
 }
